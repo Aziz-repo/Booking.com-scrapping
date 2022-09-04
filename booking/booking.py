@@ -65,7 +65,7 @@ class Booking(webdriver.Chrome):
 
         check_out_element.click()
 
-    # Helper method
+    ## Helper methods for filtering the input
     def __filter_children(self, count: int) -> None:
         selector = self.find_element(
             By.CSS_SELECTOR,
