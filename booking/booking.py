@@ -1,4 +1,6 @@
+from asyncio import selector_events
 import os
+from tkinter.messagebox import NO
 import typing
 import types
 import booking.constants as const
@@ -25,51 +27,72 @@ class Booking(webdriver.Chrome):
         if self.teardown:
             self.quit()
 
-    def land_first_page(self):
+    def land_first_page(self) -> None:
         self.get(const.BASE_URL)
 
-    def change_currency(self, currency: str = None):
+    def change_currency(self, currency: str = None) -> None:
         currency_element = self.find_element(
             By.CSS_SELECTOR, 'button[data-tooltip-text="Choose your currency"]'
         )
         currency_element.click()
         selected_currency = self.find_element(
             By.CSS_SELECTOR,
-            f'a[data-modal-header-async-url-param*="selected_currency={currency}"]'
+            f'a[data-modal-header-async-url-param*="selected_currency={currency}"]',
         )
         selected_currency.click()
 
-    def select_place_to_go(self, place_to_go: str):
-        search_field = self.find_element(
-            By.ID,
-            'ss'
-        )
+    def select_place_to_go(self, place_to_go: str) -> None:
+        search_field = self.find_element(By.ID, "ss")
         search_field.clear()
         search_field.send_keys(place_to_go)
 
-        first_result = self.find_element(
-            By.CSS_SELECTOR,
-            'li[data-i="0"]'
-        )
+        first_result = self.find_element(By.CSS_SELECTOR, 'li[data-i="0"]')
         first_result.click()
 
-    def select_date(self, check_in_date: str, check_out_date: str):
+    def select_date(self, check_in_date: str, check_out_date: str) -> None:
         difference = utils.month_difference(check_in_date, check_out_date)
 
         # TODO: rewrite this block as function
         # same panel
-       
+
         check_in_element = self.find_element(
-            By.CSS_SELECTOR,
-                f'td[data-date="{check_in_date}"]'
+            By.CSS_SELECTOR, f'td[data-date="{check_in_date}"]'
         )
         check_in_element.click()
-        
 
         check_out_element = self.find_element(
-            By.CSS_SELECTOR,
-            f'td[data-date="{check_out_date}"]'
+            By.CSS_SELECTOR, f'td[data-date="{check_out_date}"]'
         )
-        
+
         check_out_element.click()
-            
+
+    def select_adults(self, count: int = 1) -> None:
+        selector_element = self.find_element(By.ID, "xp__guests__toggle")
+        selector_element.click()
+
+        while True:
+            decrease_adult = self.find_element(
+                By.CSS_SELECTOR, 'button[aria-label="Decrease number of Adults"]'
+            )
+            decrease_adult.click()
+            # Break loop when adult number is 1
+            number_element = self.find_element(
+                By.ID,
+                'group_adults'   
+            )
+            if int(number_element.get_attribute("value")) == 1:
+                break
+
+        increae_adult = self.find_element(
+            By.CSS_SELECTOR, 'button[aria-label="Increase number of Adults"]'
+        )
+        for _ in range(count - 1):
+            increae_adult.click()
+        
+    def sumbit_search(self) -> None:
+        submit_element = self.find_element(
+            By.CSS_SELECTOR,
+            'button[type="submit"]'
+        )
+        submit_element.click()
+        
