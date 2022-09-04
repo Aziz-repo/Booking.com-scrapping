@@ -1,4 +1,3 @@
-from asyncio import selector_events
 import os
 from tkinter.messagebox import NO
 import typing
@@ -54,7 +53,6 @@ class Booking(webdriver.Chrome):
 
         # TODO: rewrite this block as function
         # same panel
-
         check_in_element = self.find_element(
             By.CSS_SELECTOR, f'td[data-date="{check_in_date}"]'
         )
@@ -66,7 +64,24 @@ class Booking(webdriver.Chrome):
 
         check_out_element.click()
 
-    def select_adults(self, count: int = 1) -> None:
+    # Helper method
+    def filter_children(self, count: int) -> None:
+        selector = self.find_element(
+            By.CSS_SELECTOR,
+            'button["aria-label="Increase number of Children"]'
+        )
+        for _ in range(count):
+            selector.click()
+
+    def filter_rooms(self, count: int) -> None:
+        selector = self.find_element(
+            By.CSS_SELECTOR,
+            'button[aria-label="Increase number of Rooms"]'
+        )
+        for _ in range(count - 1):
+            selector.click()
+
+    def select_filter_adult(self, count_adult: int = 1) -> None:
         selector_element = self.find_element(By.ID, "xp__guests__toggle")
         selector_element.click()
 
@@ -76,23 +91,20 @@ class Booking(webdriver.Chrome):
             )
             decrease_adult.click()
             # Break loop when adult number is 1
-            number_element = self.find_element(
-                By.ID,
-                'group_adults'   
-            )
+            number_element = self.find_element(By.ID, "group_adults")
             if int(number_element.get_attribute("value")) == 1:
                 break
 
         increae_adult = self.find_element(
             By.CSS_SELECTOR, 'button[aria-label="Increase number of Adults"]'
         )
-        for _ in range(count - 1):
+        for _ in range(count_adult - 1):
             increae_adult.click()
-        
+
+    # TODO: write a wrapper for all the filters
+    def pick_filters(adult: bool = True, children: bool = True, rooms: bool = True) -> None:
+        pass
+
     def sumbit_search(self) -> None:
-        submit_element = self.find_element(
-            By.CSS_SELECTOR,
-            'button[type="submit"]'
-        )
+        submit_element = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
         submit_element.click()
-        
