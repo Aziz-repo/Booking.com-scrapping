@@ -4,6 +4,7 @@ import typing
 import types
 import booking.constants as const
 from utils import utils
+from typing import List
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 
@@ -65,7 +66,7 @@ class Booking(webdriver.Chrome):
         check_out_element.click()
 
     # Helper method
-    def filter_children(self, count: int) -> None:
+    def __filter_children(self, count: int) -> None:
         selector = self.find_element(
             By.CSS_SELECTOR,
             'button["aria-label="Increase number of Children"]'
@@ -73,7 +74,7 @@ class Booking(webdriver.Chrome):
         for _ in range(count):
             selector.click()
 
-    def filter_rooms(self, count: int) -> None:
+    def __filter_rooms(self, count: int) -> None:
         selector = self.find_element(
             By.CSS_SELECTOR,
             'button[aria-label="Increase number of Rooms"]'
@@ -81,7 +82,7 @@ class Booking(webdriver.Chrome):
         for _ in range(count - 1):
             selector.click()
 
-    def select_filter_adult(self, count_adult: int = 1) -> None:
+    def __filter_adult(self, count_adult: int = 1) -> None:
         selector_element = self.find_element(By.ID, "xp__guests__toggle")
         selector_element.click()
 
@@ -102,8 +103,14 @@ class Booking(webdriver.Chrome):
             increae_adult.click()
 
     # TODO: write a wrapper for all the filters
-    def pick_filters(adult: bool = True, children: bool = True, rooms: bool = True) -> None:
-        pass
+    def pick_filters(self,adult: bool = True, children: bool = True, rooms: bool = True, count: List[int] = [2, 0, 1]) -> None:
+        if adult:
+            self.__filter_adult(count[0])
+        if children:
+            self.__filter_children(count[1])
+        if rooms:
+            self.__filter_rooms(count[2])
+        
 
     def sumbit_search(self) -> None:
         submit_element = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
