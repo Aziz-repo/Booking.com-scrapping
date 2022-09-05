@@ -1,6 +1,4 @@
-from argparse import ArgumentError
 import os
-from tkinter.messagebox import NO
 import typing
 import types
 import booking.constants as const
