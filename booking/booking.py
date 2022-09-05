@@ -1,12 +1,15 @@
+from argparse import ArgumentError
 import os
 from tkinter.messagebox import NO
 import typing
 import types
 import booking.constants as const
 from utils import utils
-from typing import List
+from utils import actions
+from typing import List, Optional
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
 
 
 class Booking(webdriver.Chrome):
@@ -66,21 +69,28 @@ class Booking(webdriver.Chrome):
         check_out_element.click()
 
     ## Helper methods for filtering the input
-    def __filter_children(self, count: int) -> None:
-        selector = self.find_element(
-            By.CSS_SELECTOR,
-            'button["aria-label="Increase number of Children"]'
-        )
-        for _ in range(count):
-            selector.click()
+    def __filter_children(self, count: int, age: List[int]) -> None:
+        if (actions.check_args(count, age) and actions.check_age(age)):
+            selector = self.find_element(
+                By.CSS_SELECTOR, 'button[aria-label="Increase number of Children"]'
+            )
+            for i in range(count):
+                selector.click()
+                child_age = Select(
+                    self.find_element(
+                        By.CSS_SELECTOR, f'select[data-group-child-age="{i}"]'
+                    )
+                )
+                child_age.select_by_value(f"{age[i]}")
+        
 
     def __filter_rooms(self, count: int) -> None:
         selector = self.find_element(
-            By.CSS_SELECTOR,
-            'button[aria-label="Increase number of Rooms"]'
+            By.CSS_SELECTOR, 'button[aria-label="Increase number of Rooms"]'
         )
-        for _ in range(count - 1):
+        for i in range(count - 1):
             selector.click()
+            # work with drop box
 
     def __filter_adult(self, count_adult: int = 1) -> None:
         selector_element = self.find_element(By.ID, "xp__guests__toggle")
@@ -102,14 +112,19 @@ class Booking(webdriver.Chrome):
         for _ in range(count_adult - 1):
             increae_adult.click()
 
-    # TODO: write a wrapper for all the filters
-    def pick_filters(self,adult: bool = True, children: bool = True, rooms: bool = True, count: List[int] = [2, 0, 1]) -> None:
+    def pick_filters(
+        self,
+        adult: bool = True,
+        rooms: bool = True,
+        count: List[int] = [2, 0, 1],
+        children_age: Optional[List[int]] = None,
+    ) -> None:
         if adult:
             self.__filter_adult(count[0])
-        if children:
-            self.__filter_children(count[1])
         if rooms:
             self.__filter_rooms(count[2])
+        if children_age != None:
+            self.__filter_children(count[1], children_age)
         
 
     def sumbit_search(self) -> None:
