@@ -1,6 +1,6 @@
 from enum import Enum
 
-class sortFilters(Enum):
+class SortFilters(Enum):
     TOP_PCIK = "popularity"
     LOW_PRICE = "price"
     REVIEW_PRICE = "review_score_and_price"

@@ -4,7 +4,7 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from booking.utils import pop_up
-from enums.sort_filter import sortFilters
+from filters.sort_filter import sortFilters
 
 
 class BookingFiltration:

@@ -1,5 +1,5 @@
 from booking.booking import Booking
-from enums.sort_filter import sortFilters
+from filters.sort_filter import sortFilters
 
 with Booking() as bot:
     bot.land_first_page()

@@ -9,7 +9,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from booking.booking_filtration import BookingFiltration
-from enums.sort_filter import sortFilters
+from filters.sort_filter import SortFilters
 
 
 class Booking(webdriver.Chrome):
@@ -132,8 +132,8 @@ class Booking(webdriver.Chrome):
 
 
     # TODO: add a filtration handler to set the type of filtration used in the search
-    def apply_filtration(self, filter: sortFilters = sortFilters.TOP_PCIK, *stars: int):
+    def apply_filtration(self, filter: SortFilters = SortFilters.TOP_PCIK, *stars: int):
         filtration = BookingFiltration(driver=self)
         filtration.apply_star_rating(*stars)
-        filtration.apply_sort_filters(sortFilters.LOW_PRICE)
+        filtration.apply_sort_filters(SortFilters.LOW_PRICE)
 
