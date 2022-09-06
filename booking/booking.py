@@ -8,6 +8,8 @@ from typing import List, Optional
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
+from booking.booking_filtration import BookingFiltration
+from enums.sort_filter import sortFilters
 
 
 class Booking(webdriver.Chrome):
@@ -123,8 +125,15 @@ class Booking(webdriver.Chrome):
             self.__filter_rooms(count[2])
         if children_age != None:
             self.__filter_children(count[1], children_age)
-        
-
+    
     def sumbit_search(self) -> None:
         submit_element = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
         submit_element.click()
+
+
+    # TODO: add a filtration handler to set the type of filtration used in the search
+    def apply_filtration(self, filter: sortFilters = sortFilters.TOP_PCIK, *stars: int):
+        filtration = BookingFiltration(driver=self)
+        filtration.apply_star_rating(*stars)
+        filtration.apply_sort_filters(sortFilters.LOW_PRICE)
+
