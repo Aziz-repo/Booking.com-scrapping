@@ -10,14 +10,16 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from booking.booking_filtration import BookingFiltration
 from filters.sort_filter import SortFilters
-
+from booking.booking_reprot import BookingReport
 
 class Booking(webdriver.Chrome):
     def __init__(self, driver_path: str = r"C:/selinumDrivers", teradown: bool = False):
         self.driver_path = driver_path
         self.teardown = teradown
         os.environ["PATH"] += self.driver_path
-        super(Booking, self).__init__()
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        super(Booking, self).__init__(options=options)
         self.implicitly_wait(15)
         self.maximize_window()
 
@@ -70,7 +72,7 @@ class Booking(webdriver.Chrome):
 
     ## Helper methods for filtering the input
     def __filter_children(self, count: int, age: List[int]) -> None:
-        if (actions.check_args(count, age) and actions.check_age(age)):
+        if actions.check_args(count, age) and actions.check_age(age):
             selector = self.find_element(
                 By.CSS_SELECTOR, 'button[aria-label="Increase number of Children"]'
             )
@@ -82,7 +84,6 @@ class Booking(webdriver.Chrome):
                     )
                 )
                 child_age.select_by_value(f"{age[i]}")
-        
 
     def __filter_rooms(self, count: int) -> None:
         selector = self.find_element(
@@ -112,6 +113,7 @@ class Booking(webdriver.Chrome):
         for _ in range(count_adult - 1):
             increae_adult.click()
 
+    # wrapper for all the filter methods
     def pick_filters(
         self,
         adult: bool = True,
@@ -125,15 +127,22 @@ class Booking(webdriver.Chrome):
             self.__filter_rooms(count[2])
         if children_age != None:
             self.__filter_children(count[1], children_age)
-    
+
     def sumbit_search(self) -> None:
         submit_element = self.find_element(By.CSS_SELECTOR, 'button[type="submit"]')
         submit_element.click()
-
 
     # TODO: add a filtration handler to set the type of filtration used in the search
     def apply_filtration(self, filter: SortFilters = SortFilters.TOP_PCIK, *stars: int):
         filtration = BookingFiltration(driver=self)
         filtration.apply_star_rating(*stars)
         filtration.apply_sort_filters(SortFilters.LOW_PRICE)
+
+    def report_result(self) -> None:
+        hotel_boxes = self.find_element(By.ID, "search_results_table").find_elements(
+            By.CLASS_NAME,
+            "a826ba81c4"
+        )
+        report = BookingReport()
+        report.pull_titles()
 

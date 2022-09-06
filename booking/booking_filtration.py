@@ -1,10 +1,12 @@
 # This class file include a class with instance methods.
 # That will be responsible for interacting with our website
 # After we have some results, to apply filtration
+
+
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from booking.utils import pop_up
-from filters.sort_filter import sortFilters
+from filters.sort_filter import SortFilters
 
 
 class BookingFiltration:
@@ -27,7 +29,7 @@ class BookingFiltration:
                 ):
                     star_element.click()
 
-    def apply_sort_filters(self, filter: sortFilters) -> None:
+    def apply_sort_filters(self, filter: SortFilters) -> None:
 
         filtration_button = self.driver.find_element(By.CLASS_NAME, "e57ffa4eb5")
         filtration_button.click()
