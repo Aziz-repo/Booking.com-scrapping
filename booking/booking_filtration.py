@@ -3,7 +3,6 @@
 # After we have some results, to apply filtration
 
 
-from pickle import TRUE
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from booking.utils import pop_up
@@ -11,7 +10,8 @@ from filters.meal_filter import MealFilter
 from filters.sort_filter import SortFilters
 from filters.health_safety_filter import HealthSafetyFilter
 from filters.beach_access_filter import BeachAccessFilter
-
+from filters.bed_preference_filter import BedPrefFilter
+from filters.review_score_filter import ReviewScoreFilter
 
 # TODO: add a handler to pick the chosen filters
 class BookingFiltration:
@@ -53,7 +53,7 @@ class BookingFiltration:
         selection.click()
 
     def apply_health_safety_filter(self, filter: HealthSafetyFilter) -> None:
-        if filter.name == TRUE:
+        if filter.name == HealthSafetyFilter.TRUE:
             health_safety_filter = self.driver.find_element(
                 By.CSS_SELECTOR,
                 f'input[name="{filter.value}"]'
@@ -61,7 +61,7 @@ class BookingFiltration:
             health_safety_filter.click()
 
     def apply_beach_front_filter(self, filter: BeachAccessFilter) -> None:
-        if filter.name == TRUE:
+        if filter.name == BeachAccessFilter.TRUE:
             beach_access_filter = self.driver.find_element(
                 By.CSS_SELECTOR,
                 f'input[name="{filter.value}"]'
@@ -76,4 +76,24 @@ class BookingFiltration:
         meal_filter.click()
 
 
-    
+    def apply_bed_preference_filter(self, filter: BedPrefFilter) -> None:
+        bed_pref_filter = self.driver.find_element(
+            By.CSS_SELECTOR,
+            f'input[name="tbd={filter.value}"]'
+        )
+        bed_pref_filter.click()
+
+    def apply_review_score_filter(self, filter: ReviewScoreFilter) -> None:
+        review_score_filter = self.driver.find_element(
+            By.CSS_SELECTOR,
+            f'input[name="review_score={filter.value}"]'
+        )
+        review_score_filter.click()
+
+    def apply_private_bathroom_filter(self, number_of_private_bathroom: int) -> None:
+        increment_button = self.driver.find_element(
+            By.CLASS_NAME,
+            "d64a4ea64d"
+        )
+        for _ in range(number_of_private_bathroom):
+            increment_button.click()
