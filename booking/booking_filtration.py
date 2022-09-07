@@ -6,14 +6,19 @@
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from booking.utils import pop_up
+from filters.facilities_fitler import FacilitiesFilter
 from filters.meal_filter import MealFilter
 from filters.sort_filter import SortFilters
 from filters.health_safety_filter import HealthSafetyFilter
 from filters.beach_access_filter import BeachAccessFilter
 from filters.bed_preference_filter import BedPrefFilter
 from filters.review_score_filter import ReviewScoreFilter
+from filters.facilities_fitler import FacilitiesFilter
+from filters.room_facilities_filter import RoomFacilitiesFilter
 
 # TODO: add a handler to pick the chosen filters
+# TODO: add the functionnality of providing multiple filters
+
 class BookingFiltration:
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -97,3 +102,17 @@ class BookingFiltration:
         )
         for _ in range(number_of_private_bathroom):
             increment_button.click()
+    
+    def apply_facilities_filter(self, filter: FacilitiesFilter) -> None:
+        facility_filter = self.driver.find_element(
+            By.CSS_SELECTOR,
+            f'input[name="hotelfacility={filter.value}"]'
+        )
+        facility_filter.click()
+
+    def apply_room_facilities_filter(self, filter: RoomFacilitiesFilter) -> None:
+        room_facilty_filter = self.driver.find_element(
+            By.CSS_SELECTOR,
+            f'input[name="roomfacility={filter.name}"]'
+        )
+        room_facilty_filter.click()
