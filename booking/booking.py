@@ -136,7 +136,7 @@ class Booking(webdriver.Chrome):
     def apply_filtration(self, filter: SortFilters = SortFilters.TOP_PCIK, *stars: int):
         filtration = BookingFiltration(driver=self)
         filtration.apply_star_rating(*stars)
-        filtration.apply_sort_filters(SortFilters.LOW_PRICE)
+        filtration.apply_sort_filters(filter)
 
     def report_result(self) -> None:
         hotel_boxes = self.find_element(By.ID, "search_results_table").find_elements(

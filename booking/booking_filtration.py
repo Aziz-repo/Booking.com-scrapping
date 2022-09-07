@@ -3,12 +3,17 @@
 # After we have some results, to apply filtration
 
 
+from pickle import TRUE
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 from booking.utils import pop_up
+from filters.meal_filter import MealFilter
 from filters.sort_filter import SortFilters
+from filters.health_safety_filter import HealthSafetyFilter
+from filters.beach_access_filter import BeachAccessFilter
 
 
+# TODO: add a handler to pick the chosen filters
 class BookingFiltration:
     def __init__(self, driver: WebDriver):
         self.driver = driver
@@ -46,3 +51,29 @@ class BookingFiltration:
             By.CSS_SELECTOR, f'button[data-id="{filter.value}"]'
         )
         selection.click()
+
+    def apply_health_safety_filter(self, filter: HealthSafetyFilter) -> None:
+        if filter.name == TRUE:
+            health_safety_filter = self.driver.find_element(
+                By.CSS_SELECTOR,
+                f'input[name="{filter.value}"]'
+            )
+            health_safety_filter.click()
+
+    def apply_beach_front_filter(self, filter: BeachAccessFilter) -> None:
+        if filter.name == TRUE:
+            beach_access_filter = self.driver.find_element(
+                By.CSS_SELECTOR,
+                f'input[name="{filter.value}"]'
+            )
+            beach_access_filter.click()
+
+    def apply_meal_filter(self, filter: MealFilter) -> None:
+        meal_filter = self.driver.find_element(
+            By.CSS_SELECTOR,
+            f'input[name="mealplan={filter.value}"]'
+        )
+        meal_filter.click()
+
+
+    

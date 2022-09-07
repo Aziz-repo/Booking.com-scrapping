@@ -10,7 +10,7 @@ try:
         bot.pick_filters(count=[3, 2, 2], children_age=[12, 14])
         bot.sumbit_search()
         bot.apply_filtration(SortFilters.LOW_PRICE, 2, 3, 4)
-        bot.report_result()
+        #bot.report_result()
         print("Exiting...")
 except Exception as e:
     if 'in PATH' in str(e):
